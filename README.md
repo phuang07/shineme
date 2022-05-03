@@ -1,4 +1,7 @@
-[Architecture Diagram](../../attachments/957799496593575956/969731686457831524/unknown.png)
+# Shine.me
+
+
+![Architecture Diagram](architecture.png)
 
 ```
 // start the project locally
