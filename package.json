@@ -13,7 +13,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "lite-server": "^2.3.0"
+    "lite-server": "^2.6.1"
   },
   "dependencies": {
     "@truffle/hdwallet-provider": "^2.0.7",
