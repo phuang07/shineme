@@ -8,6 +8,7 @@
   },
   "scripts": {
     "dev": "lite-server",
+    "start": "lite-server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -18,5 +19,9 @@
   "dependencies": {
     "@truffle/hdwallet-provider": "^2.0.7",
     "ganache": "^7.0.5"
-  }
+  },
+  "engines": {
+    "node": "12.22.10",
+    "npm": "6.14.16"
+  } 
 }
