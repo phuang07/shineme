@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "bib": 1617,   
+    "url": "https://marathon-pictures.s3.amazonaws.com/pictures/7062968.jpg",
+    "photographer": "abc123"
+  },
+  {
+    "id": 2,
+    "bib": 576,   
+    "url": "https://marathon-pictures.s3.amazonaws.com/pictures/30756445.jpg",
+    "photographer": "nbc"
+  },
+  {
+    "id": 3,
+    "bib": 808,   
+    "url": "https://marathon-pictures.s3.amazonaws.com/pictures/36587834.jpg",
+    "photographer": "nbc"
+  },
+  {
+    "id": 4,
+    "bib": 95,   
+    "url": "https://marathon-pictures.s3.amazonaws.com/pictures/84664282.jpg",
+    "photographer": "abc123"
+  }
+]

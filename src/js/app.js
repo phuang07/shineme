@@ -1,26 +1,48 @@
 App = {
   web3Provider: null,
   contracts: {},
+  photos: {},
+  gun: Gun(['shineme1.us-south.cf.appdomain.cloud', 'https://gun-manhattan.herokuapp.com/gun']),
 
   init: async function() {
-    // Load pets.
-    $.getJSON('../pets.json', function(data) {
-      var petsRow = $('#petsRow');
-      var petTemplate = $('#petTemplate');
 
-      for (i = 0; i < data.length; i ++) {
-        petTemplate.find('.panel-title').text(data[i].name);
-        petTemplate.find('img').attr('src', data[i].picture);
-        petTemplate.find('.pet-breed').text(data[i].breed);
-        petTemplate.find('.pet-age').text(data[i].age);
-        petTemplate.find('.pet-location').text(data[i].location);
-        petTemplate.find('.btn-adopt').attr('data-id', data[i].id);
-
-        petsRow.append(petTemplate.html());
-      }
-    });
+    // Set up gun.js
+    App.setupGunjs();
 
     return await App.initWeb3();
+  },
+
+
+  setupGunjs: function() {
+    photos = App.gun.get('photos2');
+    
+    photos.map().once((data) => {
+      console.log(data);
+      App.updatePhotoGrid(data);
+    });
+  },
+
+  updateStore: function(data) {
+    App.gun.get('photos2').put(data);
+  },
+
+  updatePhotoGrid: function(data) {
+    console.log(data.bib);
+    if (data.bib == undefined) {
+      return;
+    };
+
+    var Row = $('#runnersRow');
+    var Template = $('#runnerTemplate').clone();
+
+    Template.find('.bib').addClass('bib-' + data.bib);
+    Template.find('.panel-title').text(data.bib);
+    Template.find('img').attr('src', data.url);
+    Template.find('.photographer').text(data.photographer);
+    Template.find('.runner-bib').text(data.bib);
+    Template.find('.btn-purchase').attr('data-id', data.id);
+    Row.append(Template.html());
+
   },
 
   initWeb3: async function() {
@@ -103,8 +125,8 @@ App = {
       }
     
       var account = accounts[0];
-    console.log(account);
-    console.log(App.contracts);
+      console.log(account);
+      console.log(App.contracts);
       App.contracts.Adoption.deployed().then(function(instance) {
         adoptionInstance = instance;
     
@@ -117,6 +139,25 @@ App = {
       });
     });
     
+  },
+
+  addSearchListener: function(e) {
+    $('#bib-search').on('click', function(e){
+      e.preventDefault();
+
+      var bib = $('#input-bib').val();
+      console.log('bib is: ' + bib);
+      
+      if(bib == '') { $('.bib').show(); return } 
+
+      $('.bib').show();
+      $('.bib').each(function(index, val){
+        if (!$(val).hasClass('bib-' + bib)) {
+          $(val).hide();
+        }
+      });
+
+    });
   }
 
 };
@@ -124,5 +165,6 @@ App = {
 $(function() {
   $(window).load(function() {
     App.init();
+    App.addSearchListener();
   });
 });

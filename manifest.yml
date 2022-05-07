@@ -1,0 +1,10 @@
+applications:
+- name: shineme1
+  random-route: true
+  memory: 256M
+  buildpack: nodejs_buildpack
+
+- name: shineme2
+  random-route: true
+  memory: 256M
+  buildpack: nodejs_buildpack
