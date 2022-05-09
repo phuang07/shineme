@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <title>Photo Shop</title>
 
     <!-- Bootstrap -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="css/subscribe.css"/>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -22,10 +23,43 @@
       <div class="row">
         <div class="col-xs-12 col-sm-8 col-sm-push-2">
           <h1 class="text-center">Photo Shop</h1>
-          <hr/>
-          <br/>
+          <hr />
+          <br />
+        </div>
+      </div>   
+
+      <!-- subscription area -->
+      <div>
+        <button type="button" id="collapsible">
+          Didn't see your picture? Click here to Subscribe!
+        </button>
+        <div id="subscribe_content">
+          <label class="form_element" for="form_bib">Your bib number:</label><br />
+          <input
+            class="form_element"
+            type="text"
+            id="form_bib"
+            name="form_bib"
+          /><br />
+          <label class="form_element" for="form_email">Your email:</label><br />
+          <input
+            class="form_element"
+            type="text"
+            id="form_email"
+            name="form_email"
+          /><br />
+          <button 
+            type="button"
+            class="form_element"
+            value="Subscribe"
+            onclick="bib_subscribe()">
+            Subscribe
+          </button>
+          <p class="form_element" id="form_message"></p>
         </div>
       </div>
+
+      <br />
 
       <div class="row">
         <div class="col-sm-8">
@@ -48,25 +82,40 @@
       </div>
     </div>
 
-    <div id="runnerTemplate" style="display: none;">
+    <div id="runnerTemplate" style="display: none">
       <div class="col-sm-6 col-md-4 col-lg-3 bib">
         <div class="panel panel-default panel-pet">
           <div class="panel-heading">
             <h3 class="panel-title">Placeholder</h3>
           </div>
           <div class="panel-body">
-            <img alt="140x140" data-src="holder.js/140x140" class="img-rounded img-center" style="width: 100%;" src="https://animalso.com/wp-content/uploads/2017/01/Golden-Retriever_6.jpg" data-holder-rendered="true">
-            <br/><br/>
-            <strong>Photographer</strong>: <span class="photographer">Placeholder</span><br/>
-            <strong>Bib#</strong>: <span class="runner-bib">Placeholder</span><br/><br />
-            <button class="btn btn-default btn-adopt btn-purchase" type="button" data-id="0">Purchase</button>
+            <img
+              alt="140x140"
+              data-src="holder.js/140x140"
+              class="img-rounded img-center"
+              style="width: 100%"
+              src="https://animalso.com/wp-content/uploads/2017/01/Golden-Retriever_6.jpg"
+              data-holder-rendered="true"
+            />
+            <br /><br />
+            <strong>Photographer</strong>:
+            <span class="photographer">Placeholder</span><br />
+            <strong>Bib#</strong>: <span class="runner-bib">Placeholder</span
+            ><br /><br />
+            <button
+              class="btn btn-default btn-adopt btn-purchase"
+              type="button"
+              data-id="0"
+            >
+              Purchase
+            </button>
           </div>
         </div>
       </div>
     </div>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <!-- Include all compiled plugins (below), or include individual files as needed --> 
     <script src="js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gun/sea.js"></script>
@@ -74,5 +123,7 @@
     <script src="js/web3.min.js"></script>
     <script src="js/truffle-contract.js"></script>
     <script src="js/app.js"></script>
+    <script src="js/subscribe.js"></script>
+    </script>
   </body>
 </html>
