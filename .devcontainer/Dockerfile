@@ -1,4 +1,4 @@
-FROM node:12-alpine3.14
+FROM node:12.22.10 
 
 # Set up the Python development environment
 WORKDIR /app

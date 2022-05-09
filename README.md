@@ -74,3 +74,12 @@ App.updateStore({'6': {
 
 
 ```
+
+
+## Deploy smart contract to a network
+
+```
+truffle compile
+// Add deployment script under migrations/
+truffle migrate --network ropsten
+```
