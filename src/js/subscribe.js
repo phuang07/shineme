@@ -4,9 +4,10 @@ function bib_clearMessage() {
 
 function bib_subscribe() {
     console.log("submitting request...");
+    var elements = ["A new photo has just been uploaded for Bib Number: ", $('#form_bib').val(), "."];
     let data = {
-        subject: "subject",
-        body: "body",
+        subject: "[SHINE.me] We have a new photo for you!",
+        body: elements.join(""),
         email: $('#form_email').val(),
         message_bib: $('#form_bib').val(),
         message_topic: "new_picture"
@@ -22,7 +23,6 @@ function bib_subscribe() {
     });
     return false;
 }
-
 
 $('#collapsible').on("click", function(){
     this.classList.toggle("active");
