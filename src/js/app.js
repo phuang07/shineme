@@ -8,6 +8,7 @@ App = {
   upload_image: null,
   API_ENDPOINT:'https://9kc7jq1mp2.execute-api.us-east-1.amazonaws.com/default/getPresignedURL',
   TEXTRACT_ENDPOINT:'https://bikodailzb.execute-api.us-east-1.amazonaws.com/default/insert_image_info',
+  EMAIL_GENERATE_EVENT:'https://prod-77.eastus.logic.azure.com:443/workflows/dc63a65e6a3c4772b195f55452f9c7cd/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=50PFp4e81NW1ojJRU-N2t9BNTRuRdkMQm0CIEIeH4T4',
   
   init: async function() {
     // Set up gun.js
@@ -71,7 +72,7 @@ App = {
               resp_body.then((res)=>{
                 // console.log(res)
                 textract_res = res
-              }).then(function() {
+              }).then(async function() {
                 pic_info.bibs = textract_res
                 // remove duplicates in textract result
                 console.log(textract_res)
@@ -95,12 +96,23 @@ App = {
                   entry = {}
                   entry[uuid_each] = data_2_insert
                   App.updateStore(entry)
+                  // send subscription email
+                  // post to azure pub/sub service
+                  await fetch(App.EMAIL_GENERATE_EVENT, {
+                    method: 'POST',
+                    body: {
+                      "message_topic": "new_picture",
+                      "message_bib": textract_res[i]
+                    }
+                  }).then(res => console.log(res))
+
                 }
                 
                 // let pts = App.gun.get('photos2')
                 // pts.map().once((e) => {
                 //   console.log(e);
                 // });
+
               })
             })
           })
