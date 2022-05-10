@@ -67,28 +67,41 @@ App = {
               method: 'POST',
               body: JSON.stringify(pic_info)
             }).then((response) => {
-              resp_body = response.text()
+              resp_body = response.json()
               resp_body.then((res)=>{
                 // console.log(res)
                 textract_res = res
-                console.log(res)
-              })
-            }).then(function() {
-              pic_info.bibs = textract_res
-              let id = pic_info.id
-              console.log("image url:", pic_info['pic-url'])
-              let data_2_insert = {'199': {
-                      "id": 199,
-                      "bib": textract_res,   
+              }).then(function() {
+                pic_info.bibs = textract_res
+                // remove duplicates in textract result
+                console.log(textract_res)
+                textract_res = [...new Set(textract_res)]
+
+                console.log(textract_res)
+  
+                let id = pic_info.id
+                for (let i = 0; i < textract_res.length - 1; i++) {
+                  // use fixed id=1 since it doesn't affect the result
+                  let integer = parseInt(textract_res[i])
+                  var uuid_each = uuidv4()
+                  console.log(uuid_each)
+                  let data_2_insert = {
+                      "id": 888,
+                      "bib": integer,   
                       "url": pic_info['pic-url'],
                       "photographer": "JaRa"
                     }
-              }
-              App.updateStore(data_2_insert)
-              let pts = App.gun.get('photos2')
-              pts.map().once((e) => {
-                console.log(e);
-              });
+                  
+                  entry = {}
+                  entry[uuid_each] = data_2_insert
+                  App.updateStore(entry)
+                }
+                
+                // let pts = App.gun.get('photos2')
+                // pts.map().once((e) => {
+                //   console.log(e);
+                // });
+              })
             })
           })
         })
