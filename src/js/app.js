@@ -1,21 +1,19 @@
 App = {
+  
   web3Provider: null,
   contracts: {},
   photos: {},
   MAX_IMAGE_SIZE: 5000000,
   gun: Gun(['shineme1.us-south.cf.appdomain.cloud', 'https://gun-manhattan.herokuapp.com/gun']),
   upload_image: null,
-  
   API_ENDPOINT:'https://9kc7jq1mp2.execute-api.us-east-1.amazonaws.com/default/getPresignedURL',
-  dynamodb_insertion_ENDPOINT:'https://bikodailzb.execute-api.us-east-1.amazonaws.com/default/insert_image_info',
+  TEXTRACT_ENDPOINT:'https://bikodailzb.execute-api.us-east-1.amazonaws.com/default/insert_image_info',
   
   init: async function() {
-
     // Set up gun.js
     App.setupGunjs();
     // const upload_file = document.getElementById("upload-image");
     const upload_btn = document.getElementById("upload-button");
-    
     
     // save temp file
     // upload_file.addEventListener("click", function(data) {
@@ -51,7 +49,33 @@ App = {
           await fetch(presignedURL['uploadURL'], {
             method: 'PUT',
             body: blobData
-          }).then(res => console.log("upload result", res))
+          }).then(res => console.log("upload result", res)).then(async function() {
+            var resp_body
+            var textract_res
+            
+            
+            console.log(presignedURL['uploadURL'].split('?')[0])
+            var image_url = presignedURL['uploadURL'].split('?')[0];
+
+            var pic_info =  {
+              "uuid": uuidv4(),
+              "pic-url": image_url,
+              "uploader": "Jara",
+              "uploader-id": 0
+            }
+
+            await fetch(App.TEXTRACT_ENDPOINT, {
+              method: 'POST',
+              body: JSON.stringify(pic_info)
+            }).then((response) => {
+              resp_body = response.text()
+              resp_body.then((res)=>{
+                // console.log(res)
+                textract_res = res
+                console.log(res)
+              })
+            })
+          })
         })
       })
 
@@ -293,6 +317,7 @@ App = {
   }
 
 };
+
 
 function saveImage(file) {
   const files = file.files;
