@@ -2,16 +2,88 @@ App = {
   web3Provider: null,
   contracts: {},
   photos: {},
+  MAX_IMAGE_SIZE: 5000000,
   gun: Gun(['shineme1.us-south.cf.appdomain.cloud', 'https://gun-manhattan.herokuapp.com/gun']),
-
+  upload_image: null,
+  
+  API_ENDPOINT:'https://9kc7jq1mp2.execute-api.us-east-1.amazonaws.com/default/getPresignedURL',
+  dynamodb_insertion_ENDPOINT:'https://bikodailzb.execute-api.us-east-1.amazonaws.com/default/insert_image_info',
+  
   init: async function() {
 
     // Set up gun.js
     App.setupGunjs();
+    // const upload_file = document.getElementById("upload-image");
+    const upload_btn = document.getElementById("upload-button");
+    
+    
+    // save temp file
+    // upload_file.addEventListener("click", function(data) {
+      
+    // })
+    var blobData;
+    // upload file to S3 and insert data into gun js database
+    upload_btn.addEventListener("click", async function(e) {  
+      if (App.upload_image == null) {
+        alert("no file chosen");
+        return;
+      }
+      console.log(App.upload_image);
+      // request S3 upload URI
+      var presignedURL;
+      await fetch(App.API_ENDPOINT, {
+        method: 'GET'
+      }).then(response => {
+        resp_body = response.text()
+        resp_body.then((res)=>{
+          presignedURL = res
+        }).then(function() {
+          console.log(presignedURL)
+          let binary = atob(App.upload_image.split(',')[1])
+          let array = []
+          for (var i = 0; i < binary.length; i++) {
+            array.push(binary.charCodeAt(i))
+          }
+          blobData = new Blob([new Uint8Array(array)], {type: 'image/jpeg'})
+        }).then(async function() {
+          // upload to s3
+          presignedURL = JSON.parse(presignedURL)
+          await fetch(presignedURL['uploadURL'], {
+            method: 'PUT',
+            body: blobData
+          }).then(res => console.log("upload result", res))
+        })
+      })
+
+      
+      // console.log('Response: ', S3_result.data)
+      
+      
+      
+      // console.log('Result: ', result)
+      // Final URL for the user doesn't need the query string params
+      // use this to link pic info in dynamodb
+
+    })
 
     return await App.initWeb3();
   },
 
+  createImage: function(file) {
+    let reader = new FileReader()
+    reader.onload = (e) => {
+      console.log('length: ', e.target.result.includes('data:image/jpeg'))
+      if (!e.target.result.includes('data:image/jpeg')) {
+        return alert('Wrong file type - JPG only.')
+      }
+      if (e.target.result.length > App.MAX_IMAGE_SIZE) {
+        return alert('Image is loo large - 5Mb maximum')
+      }
+      App.upload_image = e.target.result
+    }
+    reader.readAsDataURL(file)
+  },
+  
 
   setupGunjs: function() {
     photos = App.gun.get('photos2');
@@ -221,6 +293,12 @@ App = {
   }
 
 };
+
+function saveImage(file) {
+  const files = file.files;
+  App.createImage(files[0])
+  console.log(App.upload_image)
+}
 
 $(function() {
   $(window).load(function() {
