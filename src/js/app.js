@@ -54,7 +54,6 @@ App = {
             var textract_res
             
             
-            console.log(presignedURL['uploadURL'].split('?')[0])
             var image_url = presignedURL['uploadURL'].split('?')[0];
 
             var pic_info =  {
@@ -74,6 +73,22 @@ App = {
                 textract_res = res
                 console.log(res)
               })
+            }).then(function() {
+              pic_info.bibs = textract_res
+              let id = pic_info.id
+              console.log("image url:", pic_info['pic-url'])
+              let data_2_insert = {'199': {
+                      "id": 199,
+                      "bib": textract_res,   
+                      "url": pic_info['pic-url'],
+                      "photographer": "JaRa"
+                    }
+              }
+              App.updateStore(data_2_insert)
+              let pts = App.gun.get('photos2')
+              pts.map().once((e) => {
+                console.log(e);
+              });
             })
           })
         })
