@@ -98,12 +98,13 @@ App = {
                   App.updateStore(entry)
                   // send subscription email
                   // post to azure pub/sub service
+                  email_generate_event_body = {
+                    "message_topic": "new_picture",
+                    "message_bib": textract_res[i]
+                  }
                   await fetch(App.EMAIL_GENERATE_EVENT, {
                     method: 'POST',
-                    body: {
-                      "message_topic": "new_picture",
-                      "message_bib": textract_res[i]
-                    }
+                    body: JSON.stringify(email_generate_event_body)
                   }).then(res => console.log(res))
 
                 }
