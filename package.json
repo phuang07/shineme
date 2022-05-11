@@ -1,7 +1,7 @@
 {
   "name": "pet-shop",
   "version": "1.0.0",
-  "description": "",
+  "description": "![Architecture Diagram](architecture.png)",
   "main": "truffle.js",
   "directories": {
     "test": "test"
@@ -18,10 +18,21 @@
   },
   "dependencies": {
     "@truffle/hdwallet-provider": "^2.0.7",
-    "ganache": "^7.0.5"
+    "axios": "^0.27.2",
+    "ganache": "^7.0.5",
+    "uuid": "^8.3.2",
+    "uuidv4": "^6.2.13"
   },
   "engines": {
     "node": "12.22.10",
     "npm": "6.14.16"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/phuang07/shineme.git"
+  },
+  "bugs": {
+    "url": "https://github.com/phuang07/shineme/issues"
+  },
+  "homepage": "https://github.com/phuang07/shineme#readme"
 }
