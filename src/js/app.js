@@ -1,17 +1,154 @@
 App = {
+  
   web3Provider: null,
   contracts: {},
   photos: {},
+  MAX_IMAGE_SIZE: 5000000,
   gun: Gun(['shineme1.us-south.cf.appdomain.cloud', 'https://gun-manhattan.herokuapp.com/gun']),
-
+  upload_image: null,
+  API_ENDPOINT:'https://9kc7jq1mp2.execute-api.us-east-1.amazonaws.com/default/getPresignedURL',
+  TEXTRACT_ENDPOINT:'https://bikodailzb.execute-api.us-east-1.amazonaws.com/default/insert_image_info',
+  EMAIL_GENERATE_EVENT:'https://prod-77.eastus.logic.azure.com:443/workflows/dc63a65e6a3c4772b195f55452f9c7cd/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=50PFp4e81NW1ojJRU-N2t9BNTRuRdkMQm0CIEIeH4T4',
+  
   init: async function() {
-
     // Set up gun.js
     App.setupGunjs();
+    // const upload_file = document.getElementById("upload-image");
+    const upload_btn = document.getElementById("upload-button");
+    
+    // save temp file
+    // upload_file.addEventListener("click", function(data) {
+      
+    // })
+    var blobData;
+    // upload file to S3 and insert data into gun js database
+    upload_btn.addEventListener("click", async function(e) {  
+      if (App.upload_image == null) {
+        alert("no file chosen");
+        return;
+      }
+      console.log(App.upload_image);
+      // request S3 upload URI
+      var presignedURL;
+      await fetch(App.API_ENDPOINT, {
+        method: 'GET'
+      }).then(response => {
+        resp_body = response.text()
+        resp_body.then((res)=>{
+          presignedURL = res
+        }).then(function() {
+          console.log(presignedURL)
+          let binary = atob(App.upload_image.split(',')[1])
+          let array = []
+          for (var i = 0; i < binary.length; i++) {
+            array.push(binary.charCodeAt(i))
+          }
+          blobData = new Blob([new Uint8Array(array)], {type: 'image/jpeg'})
+        }).then(async function() {
+          // upload to s3
+          presignedURL = JSON.parse(presignedURL)
+          await fetch(presignedURL['uploadURL'], {
+            method: 'PUT',
+            body: blobData
+          }).then(res => console.log("upload result", res)).then(async function() {
+            var resp_body
+            var textract_res
+            
+            
+            var image_url = presignedURL['uploadURL'].split('?')[0];
+
+            var pic_info =  {
+              "uuid": uuidv4(),
+              "pic-url": image_url,
+              "uploader": "Jara",
+              "uploader-id": 0
+            }
+
+            await fetch(App.TEXTRACT_ENDPOINT, {
+              method: 'POST',
+              body: JSON.stringify(pic_info)
+            }).then((response) => {
+              resp_body = response.json()
+              resp_body.then((res)=>{
+                // console.log(res)
+                textract_res = res
+              }).then(async function() {
+                pic_info.bibs = textract_res
+                // remove duplicates in textract result
+                console.log(textract_res)
+                textract_res = [...new Set(textract_res)]
+
+                console.log(textract_res)
+  
+                let id = pic_info.id
+                for (let i = 0; i < textract_res.length - 1; i++) {
+                  // use fixed id=1 since it doesn't affect the result
+                  let integer = parseInt(textract_res[i])
+                  var uuid_each = uuidv4()
+                  console.log(uuid_each)
+                  let data_2_insert = {
+                      "id": 888,
+                      "bib": integer,   
+                      "url": pic_info['pic-url'],
+                      "photographer": "JaRa"
+                    }
+                  
+                  entry = {}
+                  entry[uuid_each] = data_2_insert
+                  App.updateStore(entry)
+                  // send subscription email
+                  // post to azure pub/sub service
+                  email_generate_event_body = {
+                    "message_topic": "new_picture",
+                    "message_bib": textract_res[i]
+                  }
+                  await fetch(App.EMAIL_GENERATE_EVENT, {
+                    method: 'POST',
+                    body: JSON.stringify(email_generate_event_body)
+                  }).then(res => console.log(res))
+
+                }
+                
+                // let pts = App.gun.get('photos2')
+                // pts.map().once((e) => {
+                //   console.log(e);
+                // });
+
+              })
+            })
+          })
+        })
+      })
+
+      
+      // console.log('Response: ', S3_result.data)
+      
+      
+      
+      // console.log('Result: ', result)
+      // Final URL for the user doesn't need the query string params
+      // use this to link pic info in dynamodb
+
+    })
 
     return await App.initWeb3();
   },
 
+  createImage: function(file) {
+    let reader = new FileReader()
+    reader.onload = (e) => {
+      console.log('length: ', e.target.result.includes('data:image/jpeg'))
+      if (!e.target.result.includes('data:image/jpeg')) {
+        return alert('Wrong file type - JPG only.')
+      }
+      if (e.target.result.length > App.MAX_IMAGE_SIZE) {
+        return alert('Image is loo large - 5Mb maximum')
+      }
+      App.upload_image = e.target.result
+    }
+    reader.readAsDataURL(file)
+  },
+  
 
   setupGunjs: function() {
     photos = App.gun.get('photos2');
@@ -221,6 +358,13 @@ App = {
   }
 
 };
+
+
+function saveImage(file) {
+  const files = file.files;
+  App.createImage(files[0])
+  console.log(App.upload_image)
+}
 
 $(function() {
   $(window).load(function() {
