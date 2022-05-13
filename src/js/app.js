@@ -81,13 +81,15 @@ App = {
                 console.log(textract_res)
   
                 let id = pic_info.id
+                // create photo_ID for this image
+                let photo_ID = Math.floor(Math.random() * 1000000)
                 for (let i = 0; i < textract_res.length - 1; i++) {
                   // use fixed id=1 since it doesn't affect the result
                   let integer = parseInt(textract_res[i])
                   var uuid_each = uuidv4()
-                  console.log(uuid_each)
+                  // console.log(uuid_each)
                   let data_2_insert = {
-                      "id": 888,
+                      "id": photo_ID,
                       "bib": integer,   
                       "url": pic_info['pic-url'],
                       "photographer": "JaRa"
