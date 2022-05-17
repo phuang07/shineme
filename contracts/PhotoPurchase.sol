@@ -1,22 +1,18 @@
 pragma solidity ^0.5.0;
 
 contract PhotoPurchase {
-address[999999] public runners;
 
-// Purchasing a photo
-function purchase(uint photoId) public returns (uint) {
-  require(photoId >= 0 && photoId <= 999999);
+  address[500] public runners;
 
-  runners[photoId] = msg.sender;
+  // Purchasing a photo
+  function purchase(uint photoId, address payable recipient) public payable {
+    require(photoId >= 0 && photoId < 500);
+    runners[photoId] = msg.sender;
+    recipient.transfer(msg.value);
+  }
 
-  return photoId;
-}
-
-// Retrieving the runners
-function getRunners() public view returns (address[999999] memory) {
-  return runners;
-}
-
-
-
+  // Retrieving the runners
+  function getRunners() public view returns (address[500] memory) {
+    return runners;
+  }
 }
