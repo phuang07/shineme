@@ -161,6 +161,7 @@ App = {
   },
 
   updateStore: function(data) {
+    console.log(data);
     App.gun.get('photos2').put(data);
   },
 
@@ -184,7 +185,7 @@ App = {
       Template.find('.btn-purchase').text('Purchased').attr('disabled', true);
     }
 
-    Row.append(Template.html());
+    Row.prepend(Template.html());
 
   },
 
