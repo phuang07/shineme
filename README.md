@@ -81,5 +81,5 @@ App.updateStore({'6': {
 ```
 truffle compile
 // Add deployment script under migrations/
-truffle migrate --network ropsten
+truffle migrate --reset --network ropsten
 ```
