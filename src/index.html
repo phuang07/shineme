@@ -31,10 +31,10 @@
 
       <!-- subscription area -->
       <div>
-        <button type="button" id="collapsible">
-          Didn't see your picture? Click here to Subscribe!
+        <button type="button" class="collapsible">
+          Didn't see your photo? Click here to Subscribe!
         </button>
-        <div id="subscribe_content">
+        <div class="collapsible_content">
           <label class="form_element" for="form_bib">Your bib number:</label><br />
           <input
             class="form_element"
@@ -61,10 +61,26 @@
       </div>
 
       <br />
-      
-      <div class="upload_image">
-        <input type="file" id="upload-image" accept="image/jpeg" onchange="saveImage(this)">
-        <button type="button" id="upload-button">Click to Upload</button>
+
+      <!-- upload area -->
+      <div>
+        <button type="button" class="collapsible">
+          Click here to Upload a new photo!
+        </button>
+        <div class="collapsible_content">
+          <label class="form_element">Detected account:</label><br />
+          <p class="form_element" id="detected_eth_account"></p>
+          <label class="form_element" for="form_uploader">Your name:</label><br />
+          <input
+            class="form_element"
+            type="text"
+            id="form_uploader"
+            name="form_uploader"
+          /><br />
+          <input class="form_element" type="file" id="upload-image" accept="image/jpeg" onchange="saveImage(this)">
+          <button class="form_element" type="button" id="upload-button">Upload</button>
+          <p class="form_element" id="upload_message"></p>
+        </div>
       </div>
 
       <br />
