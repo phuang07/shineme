@@ -315,6 +315,27 @@ App = {
       });
 
     });
+
+
+    $('#input-bib').on('keyup', function(e){
+      e.preventDefault();
+
+      var bib = $('#input-bib').val();
+      console.log('bib is: ' + bib);
+      
+      if(bib == '') { $('.bib').show(); return } 
+
+      $('.bib').show();
+      $('.bib').each(function(index, val){
+        if (!$(val).hasClass('bib-' + bib)) {
+          $(val).hide();
+        }
+      });
+
+    });
+
+
+
   }
 
 };
