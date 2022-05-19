@@ -106,6 +106,7 @@ App = {
                   }
                   await fetch(App.EMAIL_GENERATE_EVENT, {
                     method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(email_generate_event_body)
                   }).then(res => console.log(res))
 
