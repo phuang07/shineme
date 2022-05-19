@@ -24,7 +24,7 @@ function bib_subscribe() {
     return false;
 }
 
-$('#collapsible').on("click", function(){
+$('.collapsible').on("click", function(){
     this.classList.toggle("active");
     var content = this.nextElementSibling;
     if (content.style.display === "block") {

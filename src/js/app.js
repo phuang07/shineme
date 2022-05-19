@@ -86,12 +86,13 @@ App = {
                   // use fixed id=1 since it doesn't affect the result
                   let integer = parseInt(textract_res[i])
                   var uuid_each = uuidv4()
+                  var uploader_name = $("#form_uploader").val();
                   // console.log(uuid_each)
                   let data_2_insert = {
                       "id": photo_ID,
                       "bib": integer,   
                       "url": pic_info['pic-url'],
-                      "photographer": "JaRa",
+                      "photographer": uploader_name,
                       "eth_address" : web3.eth.accounts[0]
                   }
                   entry = {}
@@ -180,6 +181,7 @@ App = {
     Template.find('.runner-bib').text(data.bib);
     Template.find('.btn-purchase').attr('data-id', data.id);
     Template.find('.btn-purchase').attr('data-address', data.eth_address);
+    Template.find('.btn-purchase').attr('data-url', data.url);
 
     if(purchased[data.id]){
       Template.find('.btn-purchase').text('Purchased').attr('disabled', true);
@@ -212,6 +214,12 @@ App = {
     web3 = new Web3(App.web3Provider);
 
     window.ethereum.enable();
+
+    window.ethereum.on('accountsChanged', function (accounts) {
+      $('#detected_eth_account').text(accounts[0]);
+    })
+    $('#detected_eth_account').text(web3.eth.accounts[0]);
+
     return App.initContract();
   },
 
@@ -262,6 +270,7 @@ App = {
 
     var photo_id = parseInt($(event.target).data('id'));
     var address = $(event.target).data('address');
+    var url = $(event.target).data('url');
     console.log("eth will be sent to " + address);
     var purchaseInstance;
 
@@ -276,9 +285,11 @@ App = {
       App.contracts.PhotoPurchase.deployed().then(function(instance) {
         purchaseInstance = instance;
         // Execute purchase as a transaction by sending account
+        console.log("purchase is pending...");
         return purchaseInstance.purchase(photo_id, address, {from: account, value: web3.toWei(0.01, 'ether')});
       }).then(function(result) {
         console.log("purchased");
+        window.open(url,'_blank');
         return App.markPurchased();
       }).catch(function(err) {
         console.log(err.message);
