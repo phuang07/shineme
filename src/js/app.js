@@ -154,7 +154,7 @@ App = {
   
 
   setupGunjs: function() {
-    photos = App.gun.get('photos2');
+    photos = App.gun.get('photos3');
     
     photos.map().once((data) => {
       console.log(data);
@@ -164,7 +164,7 @@ App = {
 
   updateStore: function(data) {
     console.log(data);
-    App.gun.get('photos2').put(data);
+    App.gun.get('photos3').put(data);
   },
 
   updatePhotoGrid: function(data) {   
